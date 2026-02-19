@@ -49,11 +49,12 @@ jobs:
       - name: Run Android Appium Tests
         run: |
           GROUPS="${{ github.event.inputs.groups }}"
-          
+
           if [ -z "$GROUPS" ]; then
             echo "Running ALL tests..."
-            ./gradlew clean test -Drun.env=browserstack
+            ./gradlew clean test -Drun.env=browserstack --info --stacktrace
           else
             echo "Running group: $GROUPS"
-            ./gradlew clean test -Drun.env=browserstack -Dgroups=$GROUPS
+            ./gradlew clean test -Drun.env=browserstack -Dgroups=$GROUPS --info --stacktrace
           fi
+      
