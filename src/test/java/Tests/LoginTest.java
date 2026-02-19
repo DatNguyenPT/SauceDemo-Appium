@@ -23,7 +23,7 @@ public class LoginTest extends BaseTest {
         }
     }
 
-    @Test
+    @Test(groups = "valid-login")
     public void shouldLoginSuccessfullyWithValidCredentials() {
         GetEnv getEnv = new GetEnv();
         LoginPage loginPage = new LoginPage(driver);
