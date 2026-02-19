@@ -1,0 +1,59 @@
+name: Android Appium Tests
+
+on:
+  push:
+    branches: [ main ]
+
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+    inputs:
+      groups:
+        description: "TestNG groups to run (leave empty to run all tests)"
+        required: false
+        default: ""
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      APP_ID: ${{ secrets.APP_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Run Android Appium Tests
+        run: |
+          GROUPS="${{ github.event.inputs.groups }}"
+          
+          if [ -z "$GROUPS" ]; then
+            echo "Running ALL tests..."
+            ./gradlew clean test -Drun.env=browserstack
+          else
+            echo "Running group: $GROUPS"
+            ./gradlew clean test -Drun.env=browserstack -Dgroups=$GROUPS
+          fi
