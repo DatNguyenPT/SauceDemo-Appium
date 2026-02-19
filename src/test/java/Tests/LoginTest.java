@@ -5,11 +5,10 @@ import Pages.LoginPage;
 import Pages.MainPage;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import io.github.cdimascio.dotenv.Dotenv;
 
-public class Login extends BaseTest {
+public class LoginTest extends BaseTest {
 
     private final Dotenv dotenv = Dotenv.load();
 
