@@ -1,6 +1,7 @@
 package com.datnguyen.Config;
 
 import com.datnguyen.Utils.ConfigReader;
+import com.datnguyen.Utils.GetEnv;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 
@@ -12,7 +13,7 @@ import java.time.Duration;
 
 public class DriverConfig {
     public static AndroidDriver initializeDriver() {
-
+        GetEnv getEnv = new GetEnv();
         String runEnv = System.getProperty("run.env");
 
         if (runEnv == null) {
@@ -21,7 +22,7 @@ public class DriverConfig {
 
         boolean isBrowserStack = runEnv.equalsIgnoreCase("browserstack");
 
-        String prefix = isBrowserStack ? "bs." : "local.";
+        String prefix = isBrowserStack ? "browserstack." : "local.";
 
         MutableCapabilities caps = new MutableCapabilities();
 
@@ -31,22 +32,27 @@ public class DriverConfig {
         caps.setCapability("appium:deviceName", ConfigReader.get(prefix + "deviceName"));
         caps.setCapability("appium:platformVersion", ConfigReader.get(prefix + "platformVersion"));
         caps.setCapability("appium:autoGrantPermissions",
-                Boolean.parseBoolean(ConfigReader.get(prefix + "autoGrantPermissions")));
-        caps.setCapability("appium:newCommandTimeout",
-                Integer.parseInt(ConfigReader.get(prefix + "newCommandTimeout")));
+            Boolean.parseBoolean(ConfigReader.get(prefix + "autoGrantPermissions")));
+
+        String newCommandTimeoutStr = ConfigReader.get(prefix + "newCommandTimeout");
+        int newCommandTimeout = newCommandTimeoutStr != null ? Integer.parseInt(newCommandTimeoutStr) : 240;
+        caps.setCapability("appium:newCommandTimeout", newCommandTimeout);
+
         caps.setCapability("appium:noReset",
-                Boolean.parseBoolean(ConfigReader.get(prefix + "noReset")));
+            Boolean.parseBoolean(ConfigReader.get(prefix + "noReset")));
         caps.setCapability("appium:appWaitActivity", ConfigReader.get(prefix + "appWaitActivity"));
-        caps.setCapability("appium:appWaitDuration",
-                Integer.parseInt(ConfigReader.get(prefix + "appWaitDuration")));
+
+        String appWaitDurationStr = ConfigReader.get(prefix + "appWaitDuration");
+        int appWaitDuration = appWaitDurationStr != null ? Integer.parseInt(appWaitDurationStr) : 30000;
+        caps.setCapability("appium:appWaitDuration", appWaitDuration);
         // ===== APP =====
         if (isBrowserStack) {
 
-            caps.setCapability("appium:app", System.getenv("APP_ID"));
+            caps.setCapability("appium:app", getEnv.get("APP_ID"));
 
             MutableCapabilities bstackOptions = new MutableCapabilities();
-            bstackOptions.setCapability("userName", System.getenv("BROWSERSTACK_USERNAME"));
-            bstackOptions.setCapability("accessKey", System.getenv("BROWSERSTACK_ACCESS_KEY"));
+            bstackOptions.setCapability("userName", getEnv.get("BROWSERSTACK_USERNAME"));
+            bstackOptions.setCapability("accessKey", getEnv.get("BROWSERSTACK_ACCESS_KEY"));
             bstackOptions.setCapability("projectName", ConfigReader.get("bs.projectName"));
             bstackOptions.setCapability("buildName", ConfigReader.get("bs.buildName"));
             bstackOptions.setCapability("sessionName", ConfigReader.get("bs.sessionName"));

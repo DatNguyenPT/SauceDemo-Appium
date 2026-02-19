@@ -5,13 +5,13 @@ import Pages.LoginPage;
 import Pages.MainPage;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import io.github.cdimascio.dotenv.Dotenv;
 
-public class Login extends BaseTest {
+import com.datnguyen.Utils.GetEnv;
 
-    private final Dotenv dotenv = Dotenv.load();
+public class LoginTest extends BaseTest {
+
+
 
     @AfterMethod
     public void resetApp() {
@@ -25,9 +25,10 @@ public class Login extends BaseTest {
 
     @Test
     public void shouldLoginSuccessfullyWithValidCredentials() {
+        GetEnv getEnv = new GetEnv();
         LoginPage loginPage = new LoginPage(driver);
-        String username = dotenv.get("TEST_USERNAME");
-        String password = dotenv.get("TEST_PASSWORD");
+        String username = getEnv.get("TEST_USERNAME");
+        String password = getEnv.get("TEST_PASSWORD");
 
         loginPage.login(username, password);
 
