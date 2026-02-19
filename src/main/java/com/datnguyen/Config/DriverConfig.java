@@ -32,14 +32,19 @@ public class DriverConfig {
         caps.setCapability("appium:deviceName", ConfigReader.get(prefix + "deviceName"));
         caps.setCapability("appium:platformVersion", ConfigReader.get(prefix + "platformVersion"));
         caps.setCapability("appium:autoGrantPermissions",
-                Boolean.parseBoolean(ConfigReader.get(prefix + "autoGrantPermissions")));
-        caps.setCapability("appium:newCommandTimeout",
-                Integer.parseInt(ConfigReader.get(prefix + "newCommandTimeout")));
+            Boolean.parseBoolean(ConfigReader.get(prefix + "autoGrantPermissions")));
+
+        String newCommandTimeoutStr = ConfigReader.get(prefix + "newCommandTimeout");
+        int newCommandTimeout = newCommandTimeoutStr != null ? Integer.parseInt(newCommandTimeoutStr) : 240;
+        caps.setCapability("appium:newCommandTimeout", newCommandTimeout);
+
         caps.setCapability("appium:noReset",
-                Boolean.parseBoolean(ConfigReader.get(prefix + "noReset")));
+            Boolean.parseBoolean(ConfigReader.get(prefix + "noReset")));
         caps.setCapability("appium:appWaitActivity", ConfigReader.get(prefix + "appWaitActivity"));
-        caps.setCapability("appium:appWaitDuration",
-                Integer.parseInt(ConfigReader.get(prefix + "appWaitDuration")));
+
+        String appWaitDurationStr = ConfigReader.get(prefix + "appWaitDuration");
+        int appWaitDuration = appWaitDurationStr != null ? Integer.parseInt(appWaitDurationStr) : 30000;
+        caps.setCapability("appium:appWaitDuration", appWaitDuration);
         // ===== APP =====
         if (isBrowserStack) {
 
