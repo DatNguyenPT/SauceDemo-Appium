@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.12.0'
 }
 
 group = 'com.datnguyen.appium'
@@ -10,26 +11,49 @@ dependencies {
     // Appium Java Client
     implementation 'io.appium:java-client:9.4.0'
 
-    // Selenium (required by Appium)
+    // Selenium
     implementation 'org.seleniumhq.selenium:selenium-java:4.20.0'
 
     // TestNG
     testImplementation 'org.testng:testng:7.10.2'
 
-    // Dotenv for environment variable management
+    // Dotenv
     testImplementation 'io.github.cdimascio:dotenv-java:3.0.0'
+
+    // Allure
+    implementation 'io.qameta.allure:allure-testng:2.29.1'
+
+    // AspectJ for Allure
+    runtimeOnly 'org.aspectj:aspectjweaver:1.9.25.1'
 }
 
 test {
     useTestNG {
+        useTestNG()
+
         def groups = System.getProperty('groups', '')
         if (groups) {
             includeGroups groups
         }
     }
+
+    // AspectJ agent cho Allure
+    jvmArgs "-javaagent:${configurations.runtimeClasspath.find { it.name.contains('aspectjweaver') }}"
+
     systemProperties System.properties
+
     testLogging {
         events "passed", "skipped", "failed"
         showStandardStreams = true
     }
+
+    ignoreFailures = false
 }
+
+allure {
+    version = '2.24.0'
+    useTestNG {
+        version = '2.24.0'
+    }
+}
+
