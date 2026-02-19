@@ -46,6 +46,15 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      - name: List test classes
+        run: |
+          echo "Listing test files:"
+          find src/test -name "*.java"
+
+      - name: Show compiled test classes
+        run: |
+          find build/classes/java/test -name "*.class"
+
       - name: Run Android Appium Tests
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.groups }}" ]; then
