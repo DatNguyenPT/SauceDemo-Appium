@@ -1,6 +1,7 @@
 package com.datnguyen.Config;
 
 import com.datnguyen.Utils.ConfigReader;
+import com.datnguyen.Utils.GetEnv;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 
@@ -12,7 +13,7 @@ import java.time.Duration;
 
 public class DriverConfig {
     public static AndroidDriver initializeDriver() {
-
+        GetEnv getEnv = new GetEnv();
         String runEnv = System.getProperty("run.env");
 
         if (runEnv == null) {
@@ -45,8 +46,8 @@ public class DriverConfig {
             caps.setCapability("appium:app", System.getenv("APP_ID"));
 
             MutableCapabilities bstackOptions = new MutableCapabilities();
-            bstackOptions.setCapability("userName", System.getenv("BROWSERSTACK_USERNAME"));
-            bstackOptions.setCapability("accessKey", System.getenv("BROWSERSTACK_ACCESS_KEY"));
+            bstackOptions.setCapability("userName", getEnv.get("BROWSERSTACK_USERNAME"));
+            bstackOptions.setCapability("accessKey", getEnv.get("BROWSERSTACK_ACCESS_KEY"));
             bstackOptions.setCapability("projectName", ConfigReader.get("bs.projectName"));
             bstackOptions.setCapability("buildName", ConfigReader.get("bs.buildName"));
             bstackOptions.setCapability("sessionName", ConfigReader.get("bs.sessionName"));
