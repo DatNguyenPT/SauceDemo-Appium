@@ -22,7 +22,7 @@ public class DriverConfig {
 
         boolean isBrowserStack = runEnv.equalsIgnoreCase("browserstack");
 
-        String prefix = isBrowserStack ? "bs." : "local.";
+        String prefix = isBrowserStack ? "browserstack." : "local.";
 
         MutableCapabilities caps = new MutableCapabilities();
 
@@ -43,7 +43,7 @@ public class DriverConfig {
         // ===== APP =====
         if (isBrowserStack) {
 
-            caps.setCapability("appium:app", System.getenv("APP_ID"));
+            caps.setCapability("appium:app", getEnv.get("APP_ID"));
 
             MutableCapabilities bstackOptions = new MutableCapabilities();
             bstackOptions.setCapability("userName", getEnv.get("BROWSERSTACK_USERNAME"));
