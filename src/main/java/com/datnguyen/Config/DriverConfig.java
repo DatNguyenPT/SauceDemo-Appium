@@ -20,6 +20,9 @@ public class DriverConfig {
             runEnv = ConfigReader.get("run.env");
         }
 
+        System.out.println("RUN ENV: " + System.getProperty("run.env"));
+        System.out.println("Is BrowserStack: " + "browserstack".equalsIgnoreCase(System.getProperty("run.env")));
+
         boolean isBrowserStack = runEnv.equalsIgnoreCase("browserstack");
 
         String prefix = isBrowserStack ? "browserstack." : "local.";
@@ -68,6 +71,8 @@ public class DriverConfig {
 
             bstackOptions.setCapability("buildName", buildName);
             bstackOptions.setCapability("sessionName", testName);
+            System.out.println("Build Name: " + buildName);
+            System.out.println("Session Name: " + testName);
             bstackOptions.setCapability("debug",
                     Boolean.parseBoolean(ConfigReader.get("bs.debug")));
             bstackOptions.setCapability("networkLogs",
@@ -93,6 +98,8 @@ public class DriverConfig {
         }
 
         AndroidDriver driver = new AndroidDriver(appiumServerUrl, caps);
+        System.out.println("SERVER URL: " + appiumServerUrl);
+        System.out.println("SESSION ID: " + driver.getSessionId());
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
         return driver;
