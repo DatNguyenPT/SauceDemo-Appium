@@ -4,6 +4,7 @@ import Base.BaseTest;
 import Pages.LoginPage;
 import Pages.MainPage;
 import org.testng.Assert;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
@@ -11,10 +12,22 @@ import com.datnguyen.Utils.GetEnv;
 
 public class LoginTest extends BaseTest {
     @AfterMethod
-    public void resetApp() {
+    public void resetApp(ITestResult result) {
         if (driver != null) {
             driver.terminateApp("com.swaglabsmobileapp");
             driver.activateApp("com.swaglabsmobileapp");
+            String status = result.isSuccess() ? "passed" : "failed";
+            String reason = result.isSuccess()
+                    ? "Test passed successfully"
+                    : result.getThrowable() != null
+                    ? result.getThrowable().getMessage()
+                    : "Test failed";
+
+            driver.executeScript(
+                    "browserstack_executor: {\"action\": \"setSessionStatus\", " +
+                            "\"arguments\": {\"status\":\"" + status + "\", " +
+                            "\"reason\": \"" + reason + "\"}}"
+            );
             driver.quit();
             driver = null;
         }
