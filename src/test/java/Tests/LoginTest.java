@@ -28,6 +28,16 @@ public class LoginTest extends BaseTest {
                             "\"arguments\": {\"status\":\"" + status + "\", " +
                             "\"reason\": \"" + reason + "\"}}"
             );
+
+            driver.executeScript(
+                    "browserstack_executor: {\"action\": \"setSessionName\", " +
+                            "\"arguments\": {\"name\":\"" + result.getMethod().getMethodName() + "\"}}"
+            );
+
+            driver.executeScript(
+                    "browserstack_executor: {\"action\": \"annotate\", " +
+                            "\"arguments\": {\"data\":\"Login step completed\", \"level\":\"info\"}}"
+            );
             driver.quit();
             driver = null;
         }
