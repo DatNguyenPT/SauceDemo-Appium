@@ -12,7 +12,7 @@ import java.net.URL;
 import java.time.Duration;
 
 public class DriverConfig {
-    public static AndroidDriver initializeDriver() {
+    public static AndroidDriver initializeDriver(String testName) {
         GetEnv getEnv = new GetEnv();
         String runEnv = System.getProperty("run.env");
 
@@ -54,8 +54,20 @@ public class DriverConfig {
             bstackOptions.setCapability("userName", getEnv.get("BROWSERSTACK_USERNAME"));
             bstackOptions.setCapability("accessKey", getEnv.get("BROWSERSTACK_ACCESS_KEY"));
             bstackOptions.setCapability("projectName", ConfigReader.get("bs.projectName"));
-            bstackOptions.setCapability("buildName", ConfigReader.get("bs.buildName"));
-            bstackOptions.setCapability("sessionName", ConfigReader.get("bs.sessionName"));
+
+            String branch = System.getenv("GITHUB_REF_NAME");
+            String runNumber = System.getenv("GITHUB_RUN_NUMBER");
+
+            String buildName;
+
+            if (runNumber != null) {
+                buildName = branch + " - Build #" + runNumber;
+            } else {
+                buildName = "Local Build - " + System.currentTimeMillis();
+            }
+
+            bstackOptions.setCapability("buildName", buildName);
+            bstackOptions.setCapability("sessionName", testName);
             bstackOptions.setCapability("debug",
                     Boolean.parseBoolean(ConfigReader.get("bs.debug")));
             bstackOptions.setCapability("networkLogs",

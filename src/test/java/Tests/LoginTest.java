@@ -10,9 +10,6 @@ import org.testng.annotations.Test;
 import com.datnguyen.Utils.GetEnv;
 
 public class LoginTest extends BaseTest {
-
-
-
     @AfterMethod
     public void resetApp() {
         if (driver != null) {
@@ -27,10 +24,8 @@ public class LoginTest extends BaseTest {
     public void shouldLoginSuccessfullyWithValidCredentials() {
         GetEnv getEnv = new GetEnv();
         LoginPage loginPage = new LoginPage(driver);
-        String username = getEnv.get("TEST_USERNAME");
-        String password = getEnv.get("TEST_PASSWORD");
 
-        loginPage.login(username, password);
+        loginPage.loginWithValidCred();
 
         MainPage mainPage = new MainPage(driver);
         mainPage.isLoaded();
@@ -43,7 +38,7 @@ public class LoginTest extends BaseTest {
     public void shouldShowErrorMessageWithInvalidCredentials() {
         System.out.println("Driver null? " + (driver == null));
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.login("fakeUser", "fakePass");
+        loginPage.loginWithInvalidCred();
 
         String errorMessage = loginPage.getErrorMessage();
         System.out.println("Error Message: " + errorMessage);
