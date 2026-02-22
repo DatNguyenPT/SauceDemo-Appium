@@ -1,6 +1,7 @@
 package Pages;
 
 import Base.BasePage;
+import com.datnguyen.Utils.Scroll;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
@@ -10,7 +11,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainPage extends BasePage {
     private WebDriverWait wait;
@@ -24,13 +27,11 @@ public class MainPage extends BasePage {
 
     private final By productsContainer = AppiumBy.accessibilityId("test-PRODUCTS");
 
-    private final By totalItems = AppiumBy.androidUIAutomator("new UiSelector().description(\"test-Item\")");
+    private final By totalItems = AppiumBy.accessibilityId("test-Item title");
 
     private final By productCard = AppiumBy.accessibilityId("test-Item");
 
     private final By toggle = AppiumBy.accessibilityId("test-Toggle");
-
-    private final By firstProductContainer = AppiumBy.androidUIAutomator("new UiSelector().className(\"android.view.ViewGroup\").instance(20)");
 
     // ===== ACTIONS =====
 
@@ -44,12 +45,28 @@ public class MainPage extends BasePage {
     }
 
     public int getTotalItems() {
-        // wait for first item visible
         wait.until(ExpectedConditions.visibilityOfElementLocated(totalItems));
 
-        List<WebElement> items = driver.findElements(totalItems);
+        Set<String> uniqueItems = new HashSet<>();
+        boolean endReached = false;
 
-        return items.size();
+        while (!endReached) {
+            List<WebElement> items = driver.findElements(totalItems);
+            int previousCount = uniqueItems.size();
+
+            for (WebElement item : items) {
+                uniqueItems.add(item.getText());
+            }
+
+            Scroll scroll = new Scroll();
+            scroll.scrollDown(driver);
+
+            if (uniqueItems.size() == previousCount) {
+                endReached = true;
+            }
+        }
+
+        return uniqueItems.size();
     }
 
     public void clickToggle() {

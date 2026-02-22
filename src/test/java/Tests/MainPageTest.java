@@ -20,6 +20,9 @@ public class MainPageTest extends BaseTest {
 
     @Test(groups = "product-count-test")
     public void testTotalProductsCount() {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.loginWithValidCred();
+
         MainPage mainPage = new MainPage(driver);
         mainPage.isLoaded();
 
@@ -30,7 +33,6 @@ public class MainPageTest extends BaseTest {
     @Test(groups = "toggle-test")
     public void testToggle() {
         LoginPage loginPage = new LoginPage(driver);
-
         loginPage.loginWithValidCred();
 
         MainPage mainPage = new MainPage(driver);
