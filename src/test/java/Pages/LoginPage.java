@@ -1,6 +1,7 @@
 package Pages;
 
 import Base.BasePage;
+import com.datnguyen.Utils.GetEnv;
 import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
@@ -33,9 +34,16 @@ public class LoginPage extends BasePage {
         driver.findElement(loginButton).click();
     }
 
-    public void login(String username, String password) {
-        enterUsername(username);
-        enterPassword(password);
+    public void loginWithValidCred() {
+        GetEnv getEnv = new GetEnv();
+        enterUsername(getEnv.get("TEST_USERNAME"));
+        enterPassword(getEnv.get("TEST_PASSWORD"));
+        clickLogin();
+    }
+
+    public void loginWithInvalidCred() {
+        enterUsername("FakeUsername");
+        enterPassword("FakePassword");
         clickLogin();
     }
 

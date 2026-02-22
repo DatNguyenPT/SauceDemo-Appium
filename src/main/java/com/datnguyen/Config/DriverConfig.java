@@ -12,13 +12,16 @@ import java.net.URL;
 import java.time.Duration;
 
 public class DriverConfig {
-    public static AndroidDriver initializeDriver() {
+    public static AndroidDriver initializeDriver(String testName) {
         GetEnv getEnv = new GetEnv();
         String runEnv = System.getProperty("run.env");
 
         if (runEnv == null) {
             runEnv = ConfigReader.get("run.env");
         }
+
+        System.out.println("RUN ENV: " + System.getProperty("run.env"));
+        System.out.println("Is BrowserStack: " + "browserstack".equalsIgnoreCase(System.getProperty("run.env")));
 
         boolean isBrowserStack = runEnv.equalsIgnoreCase("browserstack");
 
@@ -54,8 +57,22 @@ public class DriverConfig {
             bstackOptions.setCapability("userName", getEnv.get("BROWSERSTACK_USERNAME"));
             bstackOptions.setCapability("accessKey", getEnv.get("BROWSERSTACK_ACCESS_KEY"));
             bstackOptions.setCapability("projectName", ConfigReader.get("bs.projectName"));
-            bstackOptions.setCapability("buildName", ConfigReader.get("bs.buildName"));
-            bstackOptions.setCapability("sessionName", ConfigReader.get("bs.sessionName"));
+
+            String branch = System.getenv("GITHUB_REF_NAME");
+            String runNumber = System.getenv("GITHUB_RUN_NUMBER");
+
+            String buildName;
+
+            if (runNumber != null) {
+                buildName = branch + " - Build #" + runNumber;
+            } else {
+                buildName = "Local Build - " + System.currentTimeMillis();
+            }
+
+            bstackOptions.setCapability("buildName", buildName);
+            bstackOptions.setCapability("sessionName", testName);
+            System.out.println("Build Name: " + buildName);
+            System.out.println("Session Name: " + testName);
             bstackOptions.setCapability("debug",
                     Boolean.parseBoolean(ConfigReader.get("bs.debug")));
             bstackOptions.setCapability("networkLogs",
@@ -81,6 +98,8 @@ public class DriverConfig {
         }
 
         AndroidDriver driver = new AndroidDriver(appiumServerUrl, caps);
+        System.out.println("SERVER URL: " + appiumServerUrl);
+        System.out.println("SESSION ID: " + driver.getSessionId());
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
         return driver;
