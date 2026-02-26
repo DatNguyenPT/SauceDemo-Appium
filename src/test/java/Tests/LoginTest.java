@@ -73,4 +73,34 @@ public class LoginTest extends BaseTest {
                 "Error message is incorrect"
         );
     }
+
+    @Test(groups = "invalid-login")
+    public void shouldShowErrorMessageWithEmptyCredentials() {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login("", "");
+
+        String errorMessage = loginPage.getErrorMessage();
+        System.out.println("Error Message: " + errorMessage);
+
+        Assert.assertTrue(
+                errorMessage.contains("Username is required"),
+                "Error message is incorrect"
+        );
+    }
+
+    @Test(groups = "invalid-login")
+    public void shouldShowErrorMessageWithEmptyPassword() {
+        GetEnv getEnv = new GetEnv();
+        String username = getEnv.get("TEST_USERNAME");
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(username, "");
+
+        String errorMessage = loginPage.getErrorMessage();
+        System.out.println("Error Message: " + errorMessage);
+
+        Assert.assertTrue(
+                errorMessage.contains("Password is required"),
+                "Error message is incorrect"
+        );
+    }
 }
